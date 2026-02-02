@@ -199,6 +199,40 @@
             padding: 10px;
         }
 
+        .card.selected {
+            border-color: var(--accent);
+            background: rgba(16, 185, 129, 0.08);
+            box-shadow: 0 0 15px rgba(16, 185, 129, 0.3);
+        }
+
+        .select-toggle {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            border: 2px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 10;
+            background: var(--bg);
+            transition: all 0.2s;
+        }
+
+        .card.selected .select-toggle {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: #064e3b;
+        }
+
+        .select-toggle:hover {
+            transform: scale(1.1);
+            border-color: var(--accent);
+        }
+
         .card h3 {
             font-size: 1.4rem;
             margin-bottom: 5px;
@@ -399,6 +433,79 @@
             margin-left: 8px;
         }
 
+        .summary-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--highlight);
+            color: #451a03;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-weight: bold;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+            cursor: pointer;
+            z-index: 900;
+            display: none;
+            transition: all 0.3s;
+            border: none;
+            font-family: inherit;
+        }
+
+        .summary-btn:hover {
+            transform: translateY(-5px);
+            filter: brightness(1.1);
+        }
+
+        .summary-btn span {
+            background: #fff;
+            color: var(--highlight);
+            border-radius: 50%;
+            padding: 2px 8px;
+            margin-left: 10px;
+            font-size: 0.8rem;
+        }
+
+        .care-summary-section {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px dashed var(--border);
+        }
+
+        .summary-card {
+            background: rgba(16, 185, 129, 0.05);
+            border: 1px solid var(--accent);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .summary-card h3 {
+            color: var(--highlight);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .summary-list {
+            list-style: none;
+        }
+
+        .summary-list li {
+            position: relative;
+            padding-left: 25px;
+            margin-bottom: 12px;
+            color: var(--text-main);
+        }
+
+        .summary-list li::before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: var(--accent);
+            font-weight: bold;
+        }
+
         @media (max-width: 600px) {
             .care-grid {
                 grid-template-columns: 1fr;
@@ -457,12 +564,36 @@
         <div class="grid" id="plantGrid"></div>
     </div>
 
+    <button id="summaryBtn" class="summary-btn" onclick="openSummary()">
+        My Garden Plan <span id="summaryCount">0</span>
+    </button>
+
     <!-- Modal Template -->
     <div class="modal-overlay" id="modalOverlay">
         <div class="modal-content" id="modalContent">
             <button class="close-btn" onclick="closeModal()">&times;</button>
             <div id="modalBody">
                 <!-- Injected via JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Plan Summary Modal -->
+    <div class="modal-overlay" id="summaryOverlay">
+        <div class="modal-content" style="max-width: 800px;">
+            <button class="close-btn" onclick="closeSummary()">&times;</button>
+            <div class="modal-header">
+                <span class="tag">Consolidated Care Plan</span>
+                <h2>Your 2026 Garden Plan</h2>
+                <p>A unified overview of nutrients, protection, and planting dates for your selected cultivars.</p>
+            </div>
+            <div id="summaryBody">
+                <!-- Injected via JS -->
+            </div>
+            <div class="modal-actions">
+                <button class="shop-btn" onclick="window.print()"
+                    style="background: var(--text-main); color: var(--bg); border: none; cursor: pointer; display: inline-block;">🖨️
+                    Print My Plan</button>
             </div>
         </div>
     </div>
@@ -734,8 +865,37 @@
         const frostInput = document.getElementById('frostDateInput');
         const hoopToggle = document.getElementById('hoopHouseToggle');
         const sortSelect = document.getElementById('sortSelect');
+        const summaryBtn = document.getElementById('summaryBtn');
+        const summaryCount = document.getElementById('summaryCount');
+        const summaryOverlay = document.getElementById('summaryOverlay');
+        const summaryBody = document.getElementById('summaryBody');
+
+        // Load selection from localStorage
+        let selectedIndices = JSON.parse(localStorage.getItem('selectedPlants') || '[]');
+        let selectedSet = new Set(selectedIndices);
 
         const formatDate = (date) => date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+
+        function toggleSelection(e, index) {
+            e.stopPropagation();
+            if (selectedSet.has(index)) {
+                selectedSet.delete(index);
+            } else {
+                selectedSet.add(index);
+            }
+            localStorage.setItem('selectedPlants', JSON.stringify([...selectedSet]));
+            updateSummaryButton();
+            render();
+        }
+
+        function updateSummaryButton() {
+            if (selectedSet.size > 0) {
+                summaryBtn.style.display = 'block';
+                summaryCount.innerText = selectedSet.size;
+            } else {
+                summaryBtn.style.display = 'none';
+            }
+        }
 
         function render() {
             const filter = search.value;
@@ -794,14 +954,17 @@
             // 5. Render
             displayList.forEach((p) => {
                 const card = document.createElement('div');
-                card.className = 'card';
-                // Note: We use p.originalIndex to ensure the modal opens the correct data from the source array
+                const isSelected = selectedSet.has(p.originalIndex);
+                card.className = `card ${isSelected ? 'selected' : ''}`;
                 card.onclick = () => openModal(p.originalIndex, p.startDay, p.outdoorDay);
 
                 // Pot badge HTML
                 const potBadge = p.potFriendly ? `<span class="pot-badge">🪣 Pot Friendly</span>` : '';
 
                 card.innerHTML = `
+                    <div class="select-toggle" onclick="toggleSelection(event, ${p.originalIndex})">
+                        ${isSelected ? '✓' : '+'}
+                    </div>
                     <div>
                         <img src="${p.image}" alt="${p.name}" class="card-image">
                         <span class="tag">${p.type}</span>
@@ -898,9 +1061,77 @@
             modal.classList.remove('active');
         }
 
+        function openSummary() {
+            const selectedPlants = [...selectedSet].map(idx => {
+                const p = plants[idx];
+                const frostDate = new Date(frostInput.value + "T12:00:00");
+                const hasHoopHouse = hoopToggle.checked;
+                const hoopOffset = hasHoopHouse ? 14 : 0;
+
+                const startDay = new Date(frostDate);
+                startDay.setDate(startDay.getDate() - (p.weeksBeforeFrost * 7));
+                const outdoorDay = new Date(frostDate);
+                outdoorDay.setDate(outdoorDay.getDate() + (p.weeksAfterFrost * 7) - hoopOffset);
+
+                return { ...p, startDay, outdoorDay };
+            });
+
+            // Aggregate Data
+            const allNutrients = [...new Set(selectedPlants.map(p => p.nutrition))];
+            const allCompanions = [...new Set(selectedPlants.flatMap(p => (p.companions || '').split(',').map(s => s.trim())))].filter(s => s);
+            const allPests = [...new Set(selectedPlants.flatMap(p => (p.pests || '').split(',').map(s => s.trim())))].filter(s => s);
+
+            summaryBody.innerHTML = `
+                <div class="summary-card">
+                    <h3>🌱 Nutrients & Soil Needs</h3>
+                    <ul class="summary-list">
+                        ${allNutrients.map(n => `<li>${n}</li>`).join('')}
+                    </ul>
+                </div>
+
+                <div class="summary-card">
+                    <h3>👯 Biological Allies (Companions)</h3>
+                    <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 15px;">Interplant these nearby to boost health and flavor:</p>
+                    <ul class="summary-list" style="display: grid; grid-template-columns: 1fr 1fr; gap: 5px;">
+                        ${allCompanions.map(c => `<li>${c}</li>`).join('')}
+                    </ul>
+                </div>
+
+                <div class="summary-card">
+                    <h3>🚫 Natural Pest & Protection Strategy</h3>
+                    <ul class="summary-list">
+                        ${allPests.map(p => `<li>${p}</li>`).join('')}
+                    </ul>
+                </div>
+
+                <div class="summary-card">
+                    <h3>📅 Your Planting Timeline</h3>
+                    <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+                         <div style="background: var(--bg); padding: 15px; border-radius: 10px; flex: 1; min-width: 200px;">
+                            <span style="font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase;">Earliest Indoor Start</span>
+                            <p style="color: var(--accent); font-weight: bold; font-size: 1.2rem;">${formatDate(new Date(Math.min(...selectedPlants.map(p => p.startDay))))}</p>
+                         </div>
+                         <div style="background: var(--bg); padding: 15px; border-radius: 10px; flex: 1; min-width: 200px;">
+                            <span style="font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase;">Earliest Outdoor Planting</span>
+                            <p style="color: var(--highlight); font-weight: bold; font-size: 1.2rem;">${formatDate(new Date(Math.min(...selectedPlants.map(p => p.outdoorDay))))}</p>
+                         </div>
+                    </div>
+                </div>
+            `;
+            summaryOverlay.classList.add('active');
+        }
+
+        function closeSummary() {
+            summaryOverlay.classList.remove('active');
+        }
+
         // Close on clicking outside
         modal.addEventListener('click', (e) => {
             if (e.target === modal) closeModal();
+        });
+
+        summaryOverlay.addEventListener('click', (e) => {
+            if (e.target === summaryOverlay) closeSummary();
         });
 
         // Init
@@ -922,6 +1153,7 @@
         const savedHoop = localStorage.getItem('userHoopHouse');
         if (savedHoop === 'true') hoopToggle.checked = true;
 
+        updateSummaryButton();
         render();
     </script>
 
