@@ -111,15 +111,19 @@
             text-align: center;
         }
 
-        /* Search */
-        .search-container {
+        /* Search & Sort */
+        .controls-container {
             margin: 40px auto;
-            max-width: 600px;
-            position: relative;
+            max-width: 800px;
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
         }
 
         #search {
-            width: 100%;
+            flex: 2;
+            min-width: 250px;
             padding: 15px 25px;
             border-radius: 50px;
             border: 1px solid var(--border);
@@ -131,7 +135,28 @@
             transition: all 0.3s ease;
         }
 
-        #search:focus {
+        #sortSelect {
+            flex: 1;
+            min-width: 200px;
+            padding: 15px 25px;
+            border-radius: 50px;
+            border: 1px solid var(--border);
+            background: var(--glass);
+            color: var(--text-main);
+            font-size: 1rem;
+            backdrop-filter: blur(10px);
+            outline: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        #sortSelect option {
+            background: var(--bg);
+            color: var(--text-main);
+        }
+
+        #search:focus,
+        #sortSelect:focus {
             border-color: var(--accent);
             box-shadow: 0 0 20px rgba(16, 185, 129, 0.2);
         }
@@ -418,8 +443,14 @@
             </div>
         </section>
 
-        <div class="search-container">
+        <div class="controls-container">
             <input type="text" id="search" placeholder="Search cultivars, traits, or types...">
+            <select id="sortSelect">
+                <option value="name">Sort: A-Z (Alphabetical)</option>
+                <option value="indoor">Sort: Start Indoors Date</option>
+                <option value="outdoor">Sort: Plant Outside Date</option>
+                <option value="maturity">Sort: Days to Maturity (Fastest)</option>
+            </select>
         </div>
 
         <div class="grid" id="plantGrid"></div>
@@ -671,38 +702,67 @@
         const search = document.getElementById('search');
         const frostInput = document.getElementById('frostDateInput');
         const hoopToggle = document.getElementById('hoopHouseToggle');
+        const sortSelect = document.getElementById('sortSelect');
 
         const formatDate = (date) => date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
 
-        function render(filter = "") {
+        function render() {
+            const filter = search.value;
+            const sortMode = sortSelect.value;
             const frostDate = new Date(frostInput.value + "T12:00:00");
             const hasHoopHouse = hoopToggle.checked;
 
             // Hoop house benefit: You can plant out ~2 weeks earlier
             const hoopOffset = hasHoopHouse ? 14 : 0;
 
-            // Stats
+            // 1. Calculate Stats 
             const safeOutside = new Date(frostDate);
             safeOutside.setDate(safeOutside.getDate() + 10 - hoopOffset);
             document.getElementById('safeOutdoorDate').innerText = formatDate(safeOutside);
+
             const generalIndoor = new Date(frostDate);
             generalIndoor.setDate(generalIndoor.getDate() - (8 * 7));
             document.getElementById('startIndoorsDate').innerText = formatDate(generalIndoor);
 
             grid.innerHTML = "";
-            const filtered = plants.filter(p => p.name.toLowerCase().includes(filter.toLowerCase()) || p.desc.toLowerCase().includes(filter.toLowerCase()));
 
-            filtered.forEach((p, index) => {
-                const startDay = new Date(frostDate); startDay.setDate(startDay.getDate() - (p.weeksBeforeFrost * 7));
+            // 2. Enhance Data (Calculate dates for *every* plant first)
+            const enhancedPlants = plants.map((p, index) => {
+                const startDay = new Date(frostDate);
+                startDay.setDate(startDay.getDate() - (p.weeksBeforeFrost * 7));
 
                 const outdoorDay = new Date(frostDate);
-                // Apply hoop house benefit
                 const daysAfterFrost = (p.weeksAfterFrost * 7) - hoopOffset;
                 outdoorDay.setDate(outdoorDay.getDate() + daysAfterFrost);
 
+                // Parse maturity for sorting (e.g., "75 Days" -> 75)
+                const maturityDays = parseInt(p.maturity) || 999;
+
+                return { ...p, originalIndex: index, startDay, outdoorDay, maturityDays };
+            });
+
+            // 3. Filter
+            let displayList = enhancedPlants.filter(p =>
+                p.name.toLowerCase().includes(filter.toLowerCase()) ||
+                p.desc.toLowerCase().includes(filter.toLowerCase()) ||
+                p.type.toLowerCase().includes(filter.toLowerCase())
+            );
+
+            // 4. Sort
+            displayList.sort((a, b) => {
+                if (sortMode === 'name') return a.name.localeCompare(b.name);
+                if (sortMode === 'indoor') return a.startDay - b.startDay;
+                if (sortMode === 'outdoor') return a.outdoorDay - b.outdoorDay;
+                if (sortMode === 'maturity') return a.maturityDays - b.maturityDays;
+                return 0;
+            });
+
+            // 5. Render
+            displayList.forEach((p) => {
                 const card = document.createElement('div');
                 card.className = 'card';
-                card.onclick = () => openModal(index, startDay, outdoorDay);
+                // Note: We use p.originalIndex to ensure the modal opens the correct data from the source array
+                card.onclick = () => openModal(p.originalIndex, p.startDay, p.outdoorDay);
 
                 // Pot badge HTML
                 const potBadge = p.potFriendly ? `<span class="pot-badge">🪣 Pot Friendly</span>` : '';
@@ -727,8 +787,8 @@
                         </div>
                         <p class="desc">${p.desc}</p>
                         <div class="stats">
-                            <div class="stat-box"><span>Start Indoors</span><strong>${formatDate(startDay)}</strong></div>
-                            <div class="stat-box"><span>Plant Outside</span><strong>${formatDate(outdoorDay)}</strong></div>
+                            <div class="stat-box"><span>Start Indoors</span><strong>${formatDate(p.startDay)}</strong></div>
+                            <div class="stat-box"><span>Plant Outside</span><strong>${formatDate(p.outdoorDay)}</strong></div>
                         </div>
                     </div>
                 `;
@@ -803,13 +863,14 @@
         // Init
         frostInput.addEventListener('change', () => {
             localStorage.setItem('userFrostDate', frostInput.value);
-            render(search.value);
+            render();
         });
         hoopToggle.addEventListener('change', () => {
             localStorage.setItem('userHoopHouse', hoopToggle.checked);
-            render(search.value);
+            render();
         });
-        search.addEventListener('input', (e) => render(e.target.value));
+        search.addEventListener('input', () => render());
+        sortSelect.addEventListener('change', () => render());
 
         // Load saved settings
         const savedDate = localStorage.getItem('userFrostDate');
