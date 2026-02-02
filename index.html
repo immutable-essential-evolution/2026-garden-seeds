@@ -14,6 +14,7 @@
         :root {
             --bg: #0f172a;
             --card-bg: rgba(30, 41, 59, 0.7);
+            --modal-bg: #1e293b;
             --accent: #10b981;
             --accent-soft: rgba(16, 185, 129, 0.15);
             --text-main: #f8fafc;
@@ -21,7 +22,7 @@
             --glass: rgba(255, 255, 255, 0.03);
             --border: rgba(255, 255, 255, 0.1);
             --highlight: #f59e0b;
-            /* Golden for dates */
+            /* Golden for dates/important info */
         }
 
         * {
@@ -63,7 +64,7 @@
             font-weight: 300;
         }
 
-        /* Planting Guide Section */
+        /* Guide Box */
         .guide-box {
             background: var(--glass);
             border: 1px solid var(--border);
@@ -79,7 +80,7 @@
 
         .guide-item {
             flex: 1;
-            min-width: 250px;
+            min-width: 200px;
             text-align: center;
         }
 
@@ -97,6 +98,20 @@
             color: var(--highlight);
         }
 
+        .guide-item input {
+            background: transparent;
+            border: 1px solid var(--accent);
+            color: var(--highlight);
+            font-size: 1.1rem;
+            padding: 5px 10px;
+            border-radius: 8px;
+            font-family: inherit;
+            font-weight: bold;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        /* Search */
         .search-container {
             margin: 40px auto;
             max-width: 600px;
@@ -121,6 +136,7 @@
             box-shadow: 0 0 20px rgba(16, 185, 129, 0.2);
         }
 
+        /* Grid & Cards */
         .grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
@@ -132,13 +148,14 @@
             border-radius: 24px;
             padding: 30px;
             border: 1px solid var(--border);
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             display: flex;
             flex-direction: column;
             justify-content: space-between;
             position: relative;
             overflow: hidden;
             backdrop-filter: blur(10px);
+            cursor: pointer;
         }
 
         .card:hover {
@@ -149,7 +166,7 @@
 
         .card h3 {
             font-size: 1.4rem;
-            margin-bottom: 12px;
+            margin-bottom: 5px;
             color: var(--accent);
         }
 
@@ -157,48 +174,10 @@
             color: var(--text-muted);
             margin-bottom: 20px;
             font-size: 0.95rem;
-            min-height: 4.5em;
-        }
-
-        /* Stats Section in Card */
-        .stats {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-bottom: 25px;
-            padding-top: 15px;
-            border-top: 1px solid var(--border);
-        }
-
-        .stat-box {
-            font-size: 0.8rem;
-        }
-
-        .stat-box span {
-            display: block;
-            color: var(--text-muted);
-            font-size: 0.7rem;
-            text-transform: uppercase;
-        }
-
-        .stat-box strong {
-            color: var(--text-main);
-        }
-
-        .card .btn {
-            display: inline-block;
-            background: var(--accent);
-            color: #064e3b;
-            text-decoration: none;
-            padding: 12px 20px;
-            border-radius: 12px;
-            font-weight: 600;
-            text-align: center;
-            transition: all 0.3s ease;
-        }
-
-        .card .btn:hover {
-            filter: brightness(1.1);
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
         }
 
         .tag {
@@ -213,9 +192,168 @@
             display: inline-block;
         }
 
-        @media (max-width: 768px) {
-            h1 {
-                font-size: 2.5rem;
+        /* Quick Icons */
+        .quick-icons {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        .icon-pair {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .icon-pair svg {
+            width: 16px;
+            height: 16px;
+            fill: currentColor;
+        }
+
+        /* Stats Grid */
+        .stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            padding-top: 15px;
+            border-top: 1px solid var(--border);
+        }
+
+        .stat-box span {
+            display: block;
+            color: var(--text-muted);
+            font-size: 0.7rem;
+            text-transform: uppercase;
+        }
+
+        .stat-box strong {
+            color: var(--text-main);
+            font-size: 0.9rem;
+        }
+
+        /* MODAL */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .modal-content {
+            background: var(--modal-bg);
+            width: 90%;
+            max-width: 700px;
+            border-radius: 24px;
+            padding: 40px;
+            border: 1px solid var(--border);
+            position: relative;
+            transform: scale(0.9);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: scale(1);
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 2rem;
+            cursor: pointer;
+            line-height: 1;
+        }
+
+        .close-btn:hover {
+            color: var(--text-main);
+        }
+
+        .modal-header {
+            margin-bottom: 30px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 20px;
+        }
+
+        .modal-header h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            color: var(--accent);
+            margin-bottom: 10px;
+        }
+
+        .care-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .care-item {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 15px;
+            border-radius: 12px;
+        }
+
+        .care-item h4 {
+            color: var(--highlight);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+            letter-spacing: 0.05em;
+        }
+
+        .care-item p {
+            font-size: 1rem;
+            color: var(--text-main);
+        }
+
+        .modal-actions {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .shop-btn {
+            background: var(--accent);
+            color: #064e3b;
+            text-decoration: none;
+            padding: 15px 40px;
+            border-radius: 50px;
+            font-weight: bold;
+            display: inline-block;
+            transition: transform 0.2s;
+        }
+
+        .shop-btn:hover {
+            transform: scale(1.05);
+            filter: brightness(1.1);
+        }
+
+        @media (max-width: 600px) {
+            .care-grid {
+                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -231,8 +369,7 @@
         <section class="guide-box">
             <div class="guide-item">
                 <span>Last Frost Date</span>
-                <input type="date" id="frostDateInput" value="2026-05-10"
-                    style="background: transparent; border: 1px solid var(--accent); color: var(--highlight); font-size: 1.1rem; padding: 5px 10px; border-radius: 8px; font-family: inherit; font-weight: bold; cursor: pointer;">
+                <input type="date" id="frostDateInput" value="2026-05-10">
             </div>
             <div class="guide-item">
                 <span>Safe to Plant Outside</span>
@@ -252,114 +389,337 @@
             <input type="text" id="search" placeholder="Search cultivars, traits, or types...">
         </div>
 
-        <div class="grid" id="plantGrid">
-            <!-- Cards will be injected here -->
+        <div class="grid" id="plantGrid"></div>
+    </div>
+
+    <!-- Modal Template -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal-content" id="modalContent">
+            <button class="close-btn" onclick="closeModal()">&times;</button>
+            <div id="modalBody">
+                <!-- Injected via JS -->
+            </div>
         </div>
     </div>
 
     <script>
-        // Use your specific dates as the "offset" logic
-        // We'll define how many weeks before/after frost each type needs
         const plants = [
-            { name: "Orange Currant Tomato", desc: "Tiny clementine-colored gems that pop with sweet flavor. Extremely productive currant variety.", link: "https://migardener.com/products/orange-currant-tomato", type: "Tomato", maturity: "75 Days", weeksBeforeFrost: 8, weeksAfterFrost: 1.5 },
-            { name: "Red Centiflor Tomato", desc: "Produces massive clusters (up to 40!) of red cherry tomatoes that ripen together.", link: "https://migardener.com/products/red-centiflor-tomato", type: "Tomato", maturity: "75 Days", weeksBeforeFrost: 8, weeksAfterFrost: 1.5 },
-            { name: "Mushroom Basket Tomato", desc: "Striking ribbed Russian heirloom with bright pink skin and a tangy, rich flavor.", link: "https://migardener.com/products/mushroom-basket-tomato", type: "Tomato", maturity: "80 Days", weeksBeforeFrost: 8, weeksAfterFrost: 1.5 },
-            { name: "Isis Candy Tomato", desc: "Marbled red and gold cherry tomatoes with a uniquely rich, candy-like sweetness.", link: "https://migardener.com/products/isis-tomato", type: "Tomato", maturity: "70 Days", weeksBeforeFrost: 8, weeksAfterFrost: 1.5 },
-            { name: "Aunt Molly's Ground Cherry", desc: "A Polish heirloom tasting like a mix of tomatillo and pineapple. Husk-covered fruits.", link: "https://migardener.com/products/aunt-mollys-groundcherry", type: "Groundcherry", maturity: "70 Days", weeksBeforeFrost: 10, weeksAfterFrost: 2 },
-            { name: "Azoychka Tomato", desc: "Productive Russian yellow heirloom with a citrusy zing and perfect acid balance.", link: "https://migardener.com/products/azoychka-tomato", type: "Tomato", maturity: "70 Days", weeksBeforeFrost: 8, weeksAfterFrost: 1.5 },
-            { name: "Ananas Noire Tomato", desc: "Also known as 'Black Pineapple.' Complex, smoky flavor and vibrant interior colors.", link: "https://migardener.com/products/ananas-noire-tomato", type: "Tomato", maturity: "85 Days", weeksBeforeFrost: 8, weeksAfterFrost: 2 },
-            { name: "Rebel Starfighter Tomato", desc: "Mesmerizing green-and-gold oxheart patterns. Classic mild green tomato taste.", link: "https://migardener.com/products/rebel-starfighter-tomato", type: "Tomato", maturity: "80 Days", weeksBeforeFrost: 8, weeksAfterFrost: 1.5 },
-            { name: "Lucid Gem Tomato", desc: "Breathtaking purple-and-orange slicers. Meatier texture, high-yielding and uniform.", link: "https://migardener.com/products/lucid-gem-tomato", type: "Tomato", maturity: "80 Days", weeksBeforeFrost: 8, weeksAfterFrost: 1.5 },
-            { name: "Champagne Bubbles Tomato", desc: "Pale yellow mini cherry tomatoes. Vigorous growth and among the sweetest available.", link: "https://migardener.com/products/champagne-bubbles-tomato", type: "Tomato", maturity: "65 Days", weeksBeforeFrost: 8, weeksAfterFrost: 1.5 },
-            { name: "Tropical Sunset Tomato", desc: "Bi-colored gold-and-pink stripes. Long shelf life and vibrant sugar-acid balance.", link: "https://migardener.com/products/tropical-sunset-tomato", type: "Tomato", maturity: "75 Days", weeksBeforeFrost: 8, weeksAfterFrost: 1.5 },
-            { name: "Gobstopper Tomato", desc: "Green-fleshed early yellow cherry. Split-resistant and intensely sweet/fruity.", link: "https://migardener.com/products/gobstopper-tomato", type: "Tomato", maturity: "70 Days", weeksBeforeFrost: 8, weeksAfterFrost: 1.5 },
-            { name: "Yellow Pear Tomato", desc: "Traditional heirloom with a delicate pear shape. Very prolific and hardy in MI gardens.", link: "https://migardener.com/products/yellow-pear-tomato", type: "Tomato", maturity: "80 Days", weeksBeforeFrost: 8, weeksAfterFrost: 1.5 },
-            { name: "Cherry Falls Tomato", desc: "Vigorous cascading variety perfect for hanging baskets. Fast-maturing and prolific.", link: "https://www.amazon.com/dp/B07MDNVFVK", type: "Amazon", maturity: "65 Days", weeksBeforeFrost: 8, weeksAfterFrost: 0.5 },
-            { name: "Hillbilly Tomato", desc: "Massive bi-colored beefsteaks. Sweeter, low-acid, and beautifully marbled inside.", link: "https://www.amazon.com/dp/B09BP81KJH", type: "Amazon", maturity: "85 Days", weeksBeforeFrost: 8, weeksAfterFrost: 2 },
-            { name: "Pineapple Heirloom Tomato", desc: "Large bicolored heirloom producing massive pink-yellow fruits with a fruity profile.", link: "https://www.amazon.com/dp/B09N4VYVC4", type: "Amazon", maturity: "90 Days", weeksBeforeFrost: 8, weeksAfterFrost: 2 }
+
+            // TOMATOES
+            {
+                name: "Orange Currant Tomato",
+                type: "Tomato",
+                desc: "Tiny clementine-colored gems that pop with sweet flavor. Extremely productive currant variety.",
+                link: "https://migardener.com/products/orange-currant-tomato",
+                maturity: "75 Days", weeksBeforeFrost: 8, weeksAfterFrost: 1.5,
+                soil: "Well-draining, Loamy", ph: "6.0 - 6.8",
+                light: "Full Sun (8+ hrs)",
+                water: "Consistent moisture",
+                nutrition: "Heavy Feeder. Needs Calcium.",
+                spacing: "36-48 inches"
+            },
+            {
+                name: "Red Centiflor Tomato",
+                type: "Tomato",
+                desc: "Produces massive clusters (up to 40!) of red cherry tomatoes that ripen together.",
+                link: "https://migardener.com/products/red-centiflor-tomato",
+                maturity: "75 Days", weeksBeforeFrost: 8, weeksAfterFrost: 1.5,
+                soil: "Rich, Fertile", ph: "6.0 - 6.8",
+                light: "Full Sun",
+                water: "Moderate",
+                nutrition: "Balanced NPK, Watch for blight",
+                spacing: "24-36 inches"
+            },
+            {
+                name: "Mushroom Basket Tomato",
+                type: "Tomato",
+                desc: "Striking ribbed Russian heirloom with bright pink skin and a tangy, rich flavor.",
+                link: "https://migardener.com/products/mushroom-basket-tomato",
+                maturity: "80 Days", weeksBeforeFrost: 8, weeksAfterFrost: 1.5,
+                soil: "Loose, Deep soil", ph: "6.2 - 6.8",
+                light: "Full Sun",
+                water: "Water at base",
+                nutrition: "High Potassium for fruit set",
+                spacing: "24-36 inches"
+            },
+            {
+                name: "Isis Candy Tomato",
+                type: "Tomato",
+                desc: "Marbled red and gold cherry tomatoes with a uniquely rich, candy-like sweetness.",
+                link: "https://migardener.com/products/isis-tomato",
+                maturity: "70 Days", weeksBeforeFrost: 8, weeksAfterFrost: 1.5,
+                soil: "Sandy Loam", ph: "6.0 - 6.8",
+                light: "Full Sun",
+                water: "Consistent",
+                nutrition: "Standard Tomato Fed",
+                spacing: "24-36 inches"
+            },
+            {
+                name: "Azoychka Tomato",
+                type: "Tomato",
+                desc: "Productive Russian yellow heirloom with a citrusy zing and perfect acid balance.",
+                link: "https://migardener.com/products/azoychka-tomato",
+                maturity: "70 Days", weeksBeforeFrost: 8, weeksAfterFrost: 1.5,
+                soil: "Well-draining", ph: "6.0 - 6.8",
+                light: "Full Sun",
+                water: "Drought tolerant once established",
+                nutrition: "Moderate Feeder",
+                spacing: "24-36 inches"
+            },
+            {
+                name: "Ananas Noire Tomato",
+                type: "Tomato",
+                desc: "Also known as 'Black Pineapple.' Complex, smoky flavor and vibrant interior colors.",
+                link: "https://migardener.com/products/ananas-noire-tomato",
+                maturity: "85 Days", weeksBeforeFrost: 8, weeksAfterFrost: 2,
+                soil: "Rich, Org Matter", ph: "6.0 - 6.8",
+                light: "Full Sun (Warmth needed)",
+                water: "Heavy requirement",
+                nutrition: "High feeder",
+                spacing: "36 inches"
+            },
+            {
+                name: "Rebel Starfighter Tomato",
+                type: "Tomato",
+                desc: "Mesmerizing green-and-gold oxheart patterns. Classic mild green tomato taste.",
+                link: "https://migardener.com/products/rebel-starfighter-tomato",
+                maturity: "80 Days", weeksBeforeFrost: 8, weeksAfterFrost: 1.5,
+                soil: "Loamy", ph: "6.0 - 6.8",
+                light: "Full Sun",
+                water: "Consistent",
+                nutrition: "Balanced",
+                spacing: "24-30 inches"
+            },
+            {
+                name: "Lucid Gem Tomato",
+                type: "Tomato",
+                desc: "Breathtaking purple-and-orange slicers. Meatier texture, high-yielding and uniform.",
+                link: "https://migardener.com/products/lucid-gem-tomato",
+                maturity: "80 Days", weeksBeforeFrost: 8, weeksAfterFrost: 1.5,
+                soil: "Well-draining", ph: "6.0 - 6.8",
+                light: "Full Sun (Anthocyanins need sun)",
+                water: "Moderate",
+                nutrition: "Standard",
+                spacing: "24-36 inches"
+            },
+            {
+                name: "Champagne Bubbles Tomato",
+                type: "Tomato",
+                desc: "Pale yellow mini cherry tomatoes. Vigorous growth and among the sweetest available.",
+                link: "https://migardener.com/products/champagne-bubbles-tomato",
+                maturity: "65 Days", weeksBeforeFrost: 8, weeksAfterFrost: 1.5,
+                soil: "Standard Garden", ph: "6.0 - 6.8",
+                light: "Full Sun",
+                water: "Moderate",
+                nutrition: "Light Feeder",
+                spacing: "24 inches"
+            },
+            {
+                name: "Tropical Sunset Tomato",
+                type: "Tomato",
+                desc: "Bi-colored gold-and-pink stripes. Long shelf life and vibrant sugar-acid balance.",
+                link: "https://migardener.com/products/tropical-sunset-tomato",
+                maturity: "75 Days", weeksBeforeFrost: 8, weeksAfterFrost: 1.5,
+                soil: "Well-draining", ph: "6.0 - 6.8",
+                light: "Full Sun",
+                water: "Consistent",
+                nutrition: "Balanced",
+                spacing: "24-36 inches"
+            },
+            {
+                name: "Gobstopper Tomato",
+                type: "Tomato",
+                desc: "Green-fleshed early yellow cherry. Split-resistant and intensely sweet/fruity.",
+                link: "https://migardener.com/products/gobstopper-tomato",
+                maturity: "70 Days", weeksBeforeFrost: 8, weeksAfterFrost: 1.5,
+                soil: "Trellised", ph: "6.0 - 6.8",
+                light: "Full Sun",
+                water: "Moderate",
+                nutrition: "Standard",
+                spacing: "24 inches"
+            },
+            {
+                name: "Yellow Pear Tomato",
+                type: "Tomato",
+                desc: "Traditional heirloom with a delicate pear shape. Very prolific and hardy.",
+                link: "https://migardener.com/products/yellow-pear-tomato",
+                maturity: "80 Days", weeksBeforeFrost: 8, weeksAfterFrost: 1.5,
+                soil: "Any/Hardy", ph: "6.0 - 6.8",
+                light: "Full Sun",
+                water: "Low maintanence",
+                nutrition: "Light Feeder",
+                spacing: "36 inches (Big vines)"
+            },
+            {
+                name: "Cherry Falls Tomato",
+                type: "Amazon",
+                desc: "Vigorous cascading variety perfect for hanging baskets. Fast-maturing and prolific.",
+                link: "https://www.amazon.com/dp/B07MDNVFVK",
+                maturity: "65 Days", weeksBeforeFrost: 8, weeksAfterFrost: 0.5,
+                soil: "Potting Mix", ph: "6.0 - 6.5",
+                light: "Full Sun",
+                water: "Daily (if in basket)",
+                nutrition: "Liquid Feed Weekly",
+                spacing: "1 plant per basket"
+            },
+            {
+                name: "Hillbilly Tomato",
+                type: "Amazon",
+                desc: "Massive bi-colored beefsteaks. Sweeter, low-acid, and beautifully marbled inside.",
+                link: "https://www.amazon.com/dp/B09BP81KJH",
+                maturity: "85 Days", weeksBeforeFrost: 8, weeksAfterFrost: 2,
+                soil: "Rich Loam", ph: "6.0 - 6.8",
+                light: "Full Sun",
+                water: "Deep watering",
+                nutrition: "Heavy Feeder",
+                spacing: "36 inches"
+            },
+            {
+                name: "Pineapple Heirloom Tomato",
+                type: "Amazon",
+                desc: "Large bicolored heirloom producing massive pink-yellow fruits with a fruity profile.",
+                link: "https://www.amazon.com/dp/B09N4VYVC4",
+                maturity: "90 Days", weeksBeforeFrost: 8, weeksAfterFrost: 2,
+                soil: "Rich, Mulched", ph: "6.0 - 6.8",
+                light: "Full Sun",
+                water: "Consistent",
+                nutrition: "Heavy Feeder",
+                spacing: "36 inches"
+            },
+
+            // OTHER
+            {
+                name: "Aunt Molly's Ground Cherry",
+                type: "Groundcherry",
+                desc: "A Polish heirloom tasting like a mix of tomatillo and pineapple. Husk-covered fruits.",
+                link: "https://migardener.com/products/aunt-mollys-groundcherry",
+                maturity: "70 Days", weeksBeforeFrost: 10, weeksAfterFrost: 2,
+                soil: "Average soil", ph: "6.0 - 7.0",
+                light: "Full Sun/Part Shade",
+                water: "Moderate",
+                nutrition: "Moderate Feeder",
+                spacing: "18-24 inches"
+            }
         ];
 
         const grid = document.getElementById('plantGrid');
         const search = document.getElementById('search');
         const frostInput = document.getElementById('frostDateInput');
 
-        // Helper to format date nicely
         const formatDate = (date) => date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
 
         function render(filter = "") {
-            const frostDate = new Date(frostInput.value + "T12:00:00"); // Noon to avoid timezone shifts
+            const frostDate = new Date(frostInput.value + "T12:00:00");
 
-            // Update Summary Stats
-            const safeOutside = new Date(frostDate);
-            safeOutside.setDate(safeOutside.getDate() + 10);
+            // Stats
+            const safeOutside = new Date(frostDate); safeOutside.setDate(safeOutside.getDate() + 10);
             document.getElementById('safeOutdoorDate').innerText = formatDate(safeOutside);
-
-            const generalIndoorStart = new Date(frostDate);
-            generalIndoorStart.setDate(generalIndoorStart.getDate() - (8 * 7));
-            document.getElementById('startIndoorsDate').innerText = formatDate(generalIndoorStart);
+            const generalIndoor = new Date(frostDate); generalIndoor.setDate(generalIndoor.getDate() - (8 * 7));
+            document.getElementById('startIndoorsDate').innerText = formatDate(generalIndoor);
 
             grid.innerHTML = "";
-            const filtered = plants.filter(p =>
-                p.name.toLowerCase().includes(filter.toLowerCase()) ||
-                p.desc.toLowerCase().includes(filter.toLowerCase())
-            );
+            const filtered = plants.filter(p => p.name.toLowerCase().includes(filter.toLowerCase()) || p.desc.toLowerCase().includes(filter.toLowerCase()));
 
-            filtered.forEach(p => {
-                const startDay = new Date(frostDate);
-                startDay.setDate(startDay.getDate() - (p.weeksBeforeFrost * 7));
-
-                const outdoorDay = new Date(frostDate);
-                outdoorDay.setDate(outdoorDay.getDate() + (p.weeksAfterFrost * 7));
+            filtered.forEach((p, index) => {
+                const startDay = new Date(frostDate); startDay.setDate(startDay.getDate() - (p.weeksBeforeFrost * 7));
+                const outdoorDay = new Date(frostDate); outdoorDay.setDate(outdoorDay.getDate() + (p.weeksAfterFrost * 7));
 
                 const card = document.createElement('div');
                 card.className = 'card';
+                card.onclick = () => openModal(index, startDay, outdoorDay);
                 card.innerHTML = `
                     <div>
                         <span class="tag">${p.type}</span>
                         <h3>${p.name}</h3>
+                        <div class="quick-icons">
+                            <span class="icon-pair" title="Sunlight Needs">
+                                <!-- Sun Icon -->
+                                <svg viewBox="0 0 24 24"><path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zm0-5C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
+                                ${p.light.split(' ')[0]}
+                            </span>
+                            <span class="icon-pair" title="Water Needs">
+                                <!-- Water Icon -->
+                                <svg viewBox="0 0 24 24"><path d="M12 2c-5.33 4.55-8 8.48-8 11.8 0 4.98 3.8 8.2 8 8.2s8-3.22 8-8.2c0-3.32-2.67-7.25-8-11.8z"/></svg>
+                                ${p.water.split(' ')[0]}
+                            </span>
+                        </div>
                         <p class="desc">${p.desc}</p>
                         <div class="stats">
-                            <div class="stat-box">
-                                <span>Indoor Start</span>
-                                <strong>${formatDate(startDay)}</strong>
-                            </div>
-                            <div class="stat-box">
-                                <span>Plant Outside</span>
-                                <strong>${formatDate(outdoorDay)}</strong>
-                            </div>
-                            <div class="stat-box">
-                                <span>Maturity</span>
-                                <strong>${p.maturity}</strong>
-                            </div>
-                            <div class="stat-box">
-                                <span>Location</span>
-                                <strong>Sun/Light</strong>
-                            </div>
+                            <div class="stat-box"><span>Start Indoors</span><strong>${formatDate(startDay)}</strong></div>
+                            <div class="stat-box"><span>Plant Outside</span><strong>${formatDate(outdoorDay)}</strong></div>
                         </div>
                     </div>
-                    <a href="${p.link}" target="_blank" class="btn">View Source</a>
                 `;
                 grid.appendChild(card);
             });
         }
 
+        // Modal Logic
+        const modal = document.getElementById('modalOverlay');
+        const modalBody = document.getElementById('modalBody');
+
+        function openModal(index, startDay, outdoorDay) {
+            const p = plants[index];
+            modalBody.innerHTML = `
+                <div class="modal-header">
+                    <span class="tag">${p.type}</span>
+                    <h2>${p.name}</h2>
+                    <p>${p.desc}</p>
+                </div>
+                
+                <div class="care-grid">
+                    <div class="care-item">
+                        <h4>🌱 Soil & pH</h4>
+                        <p>${p.soil} (${p.ph})</p>
+                    </div>
+                    <div class="care-item">
+                        <h4>🧪 Nutrition</h4>
+                        <p>${p.nutrition}</p>
+                    </div>
+                    <div class="care-item">
+                        <h4>☀️ Light & Temp</h4>
+                        <p>${p.light}</p>
+                    </div>
+                    <div class="care-item">
+                        <h4>📏 Spacing</h4>
+                        <p>${p.spacing}</p>
+                    </div>
+                     <div class="care-item">
+                        <h4>🏠 Start Indoors</h4>
+                        <p style="color: var(--accent); font-weight: bold;">${formatDate(startDay)}</p>
+                    </div>
+                     <div class="care-item">
+                        <h4>🌳 Move Outdoors</h4>
+                        <p style="color: var(--highlight); font-weight: bold;">${formatDate(outdoorDay)}</p>
+                    </div>
+                </div>
+
+                <div class="modal-actions">
+                    <a href="${p.link}" target="_blank" class="shop-btn">Buy / Reorder Seeds</a>
+                </div>
+            `;
+            modal.classList.add('active');
+        }
+
+        function closeModal() {
+            modal.classList.remove('active');
+        }
+
+        // Close on clicking outside
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) closeModal();
+        });
+
+        // Init
         frostInput.addEventListener('change', () => {
             localStorage.setItem('userFrostDate', frostInput.value);
             render(search.value);
         });
-
         search.addEventListener('input', (e) => render(e.target.value));
-
-        // Load saved date if exists
         const savedDate = localStorage.getItem('userFrostDate');
         if (savedDate) frostInput.value = savedDate;
-
         render();
     </script>
-
-</body>
-
-</html>
 
 </body>
 
