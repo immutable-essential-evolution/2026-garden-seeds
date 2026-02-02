@@ -231,15 +231,16 @@
         <section class="guide-box">
             <div class="guide-item">
                 <span>Last Frost Date</span>
-                <strong>Estimated: May 10th</strong>
+                <input type="date" id="frostDateInput" value="2026-05-10"
+                    style="background: transparent; border: 1px solid var(--accent); color: var(--highlight); font-size: 1.1rem; padding: 5px 10px; border-radius: 8px; font-family: inherit; font-weight: bold; cursor: pointer;">
             </div>
             <div class="guide-item">
                 <span>Safe to Plant Outside</span>
-                <strong>Late May</strong>
+                <strong id="safeOutdoorDate">Late May</strong>
             </div>
             <div class="guide-item">
                 <span>Start Indoors (Tent + Lights)</span>
-                <strong>Mid March</strong>
+                <strong id="startIndoorsDate">Mid March</strong>
             </div>
             <div class="guide-item">
                 <span>Avg. Maturity From Transplant</span>
@@ -257,29 +258,46 @@
     </div>
 
     <script>
+        // Use your specific dates as the "offset" logic
+        // We'll define how many weeks before/after frost each type needs
         const plants = [
-            { name: "Orange Currant Tomato", desc: "Tiny clementine-colored gems that pop with sweet flavor. Extremely productive currant variety.", link: "https://migardener.com/products/orange-currant-tomato", type: "Tomato", maturity: "75 Days", start: "Mar 15", outdoor: "May 20" },
-            { name: "Red Centiflor Tomato", desc: "Produces massive clusters (up to 40!) of red cherry tomatoes that ripen together.", link: "https://migardener.com/products/red-centiflor-tomato", type: "Tomato", maturity: "75 Days", start: "Mar 15", outdoor: "May 20" },
-            { name: "Mushroom Basket Tomato", desc: "Striking ribbed Russian heirloom with bright pink skin and a tangy, rich flavor.", link: "https://migardener.com/products/mushroom-basket-tomato", type: "Tomato", maturity: "80 Days", start: "Mar 15", outdoor: "May 20" },
-            { name: "Isis Candy Tomato", desc: "Marbled red and gold cherry tomatoes with a uniquely rich, candy-like sweetness.", link: "https://migardener.com/products/isis-tomato", type: "Tomato", maturity: "70 Days", start: "Mar 15", outdoor: "May 20" },
-            { name: "Aunt Molly's Ground Cherry", desc: "A Polish heirloom tasting like a mix of tomatillo and pineapple. Husk-covered fruits.", link: "https://migardener.com/products/aunt-mollys-groundcherry", type: "Groundcherry", maturity: "70 Days", start: "Mar 1", outdoor: "May 25" },
-            { name: "Azoychka Tomato", desc: "Productive Russian yellow heirloom with a citrusy zing and perfect acid balance.", link: "https://migardener.com/products/azoychka-tomato", type: "Tomato", maturity: "70 Days", start: "Mar 15", outdoor: "May 20" },
-            { name: "Ananas Noire Tomato", desc: "Also known as 'Black Pineapple.' Complex, smoky flavor and vibrant interior colors.", link: "https://migardener.com/products/ananas-noire-tomato", type: "Tomato", maturity: "85 Days", start: "Mar 15", outdoor: "May 20" },
-            { name: "Rebel Starfighter Tomato", desc: "Mesmerizing green-and-gold oxheart patterns. Classic mild green tomato taste.", link: "https://migardener.com/products/rebel-starfighter-tomato", type: "Tomato", maturity: "80 Days", start: "Mar 15", outdoor: "May 20" },
-            { name: "Lucid Gem Tomato", desc: "Breathtaking purple-and-orange slicers. Meatier texture, high-yielding and uniform.", link: "https://migardener.com/products/lucid-gem-tomato", type: "Tomato", maturity: "80 Days", start: "Mar 15", outdoor: "May 20" },
-            { name: "Champagne Bubbles Tomato", desc: "Pale yellow mini cherry tomatoes. Vigorous growth and among the sweetest available.", link: "https://migardener.com/products/champagne-bubbles-tomato", type: "Tomato", maturity: "65 Days", start: "Mar 15", outdoor: "May 20" },
-            { name: "Tropical Sunset Tomato", desc: "Bi-colored gold-and-pink stripes. Long shelf life and vibrant sugar-acid balance.", link: "https://migardener.com/products/tropical-sunset-tomato", type: "Tomato", maturity: "75 Days", start: "Mar 15", outdoor: "May 20" },
-            { name: "Gobstopper Tomato", desc: "Green-fleshed early yellow cherry. Split-resistant and intensely sweet/fruity.", link: "https://migardener.com/products/gobstopper-tomato", type: "Tomato", maturity: "70 Days", start: "Mar 15", outdoor: "May 20" },
-            { name: "Yellow Pear Tomato", desc: "Traditional heirloom with a delicate pear shape. Very prolific and hardy in MI gardens.", link: "https://migardener.com/products/yellow-pear-tomato", type: "Tomato", maturity: "80 Days", start: "Mar 15", outdoor: "May 20" },
-            { name: "Cherry Falls Tomato", desc: "Vigorous cascading variety perfect for hanging baskets. Fast-maturing and prolific.", link: "https://www.amazon.com/dp/B07MDNVFVK", type: "Amazon", maturity: "65 Days", start: "Mar 15", outdoor: "May 15" },
-            { name: "Hillbilly Tomato", desc: "Massive bi-colored beefsteaks. Sweeter, low-acid, and beautifully marbled inside.", link: "https://www.amazon.com/dp/B09BP81KJH", type: "Amazon", maturity: "85 Days", start: "Mar 15", outdoor: "May 25" },
-            { name: "Pineapple Heirloom Tomato", desc: "Large bicolored heirloom producing massive pink-yellow fruits with a fruity profile.", link: "https://www.amazon.com/dp/B09N4VYVC4", type: "Amazon", maturity: "90 Days", start: "Mar 15", outdoor: "May 25" }
+            { name: "Orange Currant Tomato", desc: "Tiny clementine-colored gems that pop with sweet flavor. Extremely productive currant variety.", link: "https://migardener.com/products/orange-currant-tomato", type: "Tomato", maturity: "75 Days", weeksBeforeFrost: 8, weeksAfterFrost: 1.5 },
+            { name: "Red Centiflor Tomato", desc: "Produces massive clusters (up to 40!) of red cherry tomatoes that ripen together.", link: "https://migardener.com/products/red-centiflor-tomato", type: "Tomato", maturity: "75 Days", weeksBeforeFrost: 8, weeksAfterFrost: 1.5 },
+            { name: "Mushroom Basket Tomato", desc: "Striking ribbed Russian heirloom with bright pink skin and a tangy, rich flavor.", link: "https://migardener.com/products/mushroom-basket-tomato", type: "Tomato", maturity: "80 Days", weeksBeforeFrost: 8, weeksAfterFrost: 1.5 },
+            { name: "Isis Candy Tomato", desc: "Marbled red and gold cherry tomatoes with a uniquely rich, candy-like sweetness.", link: "https://migardener.com/products/isis-tomato", type: "Tomato", maturity: "70 Days", weeksBeforeFrost: 8, weeksAfterFrost: 1.5 },
+            { name: "Aunt Molly's Ground Cherry", desc: "A Polish heirloom tasting like a mix of tomatillo and pineapple. Husk-covered fruits.", link: "https://migardener.com/products/aunt-mollys-groundcherry", type: "Groundcherry", maturity: "70 Days", weeksBeforeFrost: 10, weeksAfterFrost: 2 },
+            { name: "Azoychka Tomato", desc: "Productive Russian yellow heirloom with a citrusy zing and perfect acid balance.", link: "https://migardener.com/products/azoychka-tomato", type: "Tomato", maturity: "70 Days", weeksBeforeFrost: 8, weeksAfterFrost: 1.5 },
+            { name: "Ananas Noire Tomato", desc: "Also known as 'Black Pineapple.' Complex, smoky flavor and vibrant interior colors.", link: "https://migardener.com/products/ananas-noire-tomato", type: "Tomato", maturity: "85 Days", weeksBeforeFrost: 8, weeksAfterFrost: 2 },
+            { name: "Rebel Starfighter Tomato", desc: "Mesmerizing green-and-gold oxheart patterns. Classic mild green tomato taste.", link: "https://migardener.com/products/rebel-starfighter-tomato", type: "Tomato", maturity: "80 Days", weeksBeforeFrost: 8, weeksAfterFrost: 1.5 },
+            { name: "Lucid Gem Tomato", desc: "Breathtaking purple-and-orange slicers. Meatier texture, high-yielding and uniform.", link: "https://migardener.com/products/lucid-gem-tomato", type: "Tomato", maturity: "80 Days", weeksBeforeFrost: 8, weeksAfterFrost: 1.5 },
+            { name: "Champagne Bubbles Tomato", desc: "Pale yellow mini cherry tomatoes. Vigorous growth and among the sweetest available.", link: "https://migardener.com/products/champagne-bubbles-tomato", type: "Tomato", maturity: "65 Days", weeksBeforeFrost: 8, weeksAfterFrost: 1.5 },
+            { name: "Tropical Sunset Tomato", desc: "Bi-colored gold-and-pink stripes. Long shelf life and vibrant sugar-acid balance.", link: "https://migardener.com/products/tropical-sunset-tomato", type: "Tomato", maturity: "75 Days", weeksBeforeFrost: 8, weeksAfterFrost: 1.5 },
+            { name: "Gobstopper Tomato", desc: "Green-fleshed early yellow cherry. Split-resistant and intensely sweet/fruity.", link: "https://migardener.com/products/gobstopper-tomato", type: "Tomato", maturity: "70 Days", weeksBeforeFrost: 8, weeksAfterFrost: 1.5 },
+            { name: "Yellow Pear Tomato", desc: "Traditional heirloom with a delicate pear shape. Very prolific and hardy in MI gardens.", link: "https://migardener.com/products/yellow-pear-tomato", type: "Tomato", maturity: "80 Days", weeksBeforeFrost: 8, weeksAfterFrost: 1.5 },
+            { name: "Cherry Falls Tomato", desc: "Vigorous cascading variety perfect for hanging baskets. Fast-maturing and prolific.", link: "https://www.amazon.com/dp/B07MDNVFVK", type: "Amazon", maturity: "65 Days", weeksBeforeFrost: 8, weeksAfterFrost: 0.5 },
+            { name: "Hillbilly Tomato", desc: "Massive bi-colored beefsteaks. Sweeter, low-acid, and beautifully marbled inside.", link: "https://www.amazon.com/dp/B09BP81KJH", type: "Amazon", maturity: "85 Days", weeksBeforeFrost: 8, weeksAfterFrost: 2 },
+            { name: "Pineapple Heirloom Tomato", desc: "Large bicolored heirloom producing massive pink-yellow fruits with a fruity profile.", link: "https://www.amazon.com/dp/B09N4VYVC4", type: "Amazon", maturity: "90 Days", weeksBeforeFrost: 8, weeksAfterFrost: 2 }
         ];
 
         const grid = document.getElementById('plantGrid');
         const search = document.getElementById('search');
+        const frostInput = document.getElementById('frostDateInput');
+
+        // Helper to format date nicely
+        const formatDate = (date) => date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
 
         function render(filter = "") {
+            const frostDate = new Date(frostInput.value + "T12:00:00"); // Noon to avoid timezone shifts
+
+            // Update Summary Stats
+            const safeOutside = new Date(frostDate);
+            safeOutside.setDate(safeOutside.getDate() + 10);
+            document.getElementById('safeOutdoorDate').innerText = formatDate(safeOutside);
+
+            const generalIndoorStart = new Date(frostDate);
+            generalIndoorStart.setDate(generalIndoorStart.getDate() - (8 * 7));
+            document.getElementById('startIndoorsDate').innerText = formatDate(generalIndoorStart);
+
             grid.innerHTML = "";
             const filtered = plants.filter(p =>
                 p.name.toLowerCase().includes(filter.toLowerCase()) ||
@@ -287,6 +305,12 @@
             );
 
             filtered.forEach(p => {
+                const startDay = new Date(frostDate);
+                startDay.setDate(startDay.getDate() - (p.weeksBeforeFrost * 7));
+
+                const outdoorDay = new Date(frostDate);
+                outdoorDay.setDate(outdoorDay.getDate() + (p.weeksAfterFrost * 7));
+
                 const card = document.createElement('div');
                 card.className = 'card';
                 card.innerHTML = `
@@ -297,11 +321,11 @@
                         <div class="stats">
                             <div class="stat-box">
                                 <span>Indoor Start</span>
-                                <strong>${p.start}</strong>
+                                <strong>${formatDate(startDay)}</strong>
                             </div>
                             <div class="stat-box">
                                 <span>Plant Outside</span>
-                                <strong>${p.outdoor}</strong>
+                                <strong>${formatDate(outdoorDay)}</strong>
                             </div>
                             <div class="stat-box">
                                 <span>Maturity</span>
@@ -319,9 +343,20 @@
             });
         }
 
+        frostInput.addEventListener('change', () => {
+            localStorage.setItem('userFrostDate', frostInput.value);
+            render(search.value);
+        });
+
         search.addEventListener('input', (e) => render(e.target.value));
+
+        // Load saved date if exists
+        const savedDate = localStorage.getItem('userFrostDate');
+        if (savedDate) frostInput.value = savedDate;
+
         render();
     </script>
+
 </body>
 
 </html>
