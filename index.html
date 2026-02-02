@@ -351,6 +351,19 @@
             filter: brightness(1.1);
         }
 
+        /* Pot Friendly Badge */
+        .pot-badge {
+            background: rgba(245, 158, 11, 0.15);
+            color: #f59e0b;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            padding: 4px 10px;
+            border-radius: 6px;
+            display: inline-block;
+            margin-left: 8px;
+        }
+
         @media (max-width: 600px) {
             .care-grid {
                 grid-template-columns: 1fr;
@@ -370,6 +383,16 @@
             <div class="guide-item">
                 <span>Last Frost Date</span>
                 <input type="date" id="frostDateInput" value="2026-05-10">
+            </div>
+            <div class="guide-item checkbox-item"
+                style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                <label style="cursor: pointer; display: flex; align-items: center; gap: 10px; color: var(--highlight);">
+                    <input type="checkbox" id="hoopHouseToggle"
+                        style="width: 20px; height: 20px; accent-color: var(--accent);">
+                    <span>Using Hoop House?</span>
+                </label>
+                <small style="color: var(--text-muted); font-size: 0.7rem; margin-top: 5px;">(Extends season ~2
+                    wks)</small>
             </div>
             <div class="guide-item">
                 <span>Safe to Plant Outside</span>
@@ -412,11 +435,12 @@
                 desc: "Tiny clementine-colored gems that pop with sweet flavor. Extremely productive currant variety.",
                 link: "https://migardener.com/products/orange-currant-tomato",
                 maturity: "75 Days", weeksBeforeFrost: 8, weeksAfterFrost: 1.5,
-                soil: "Well-draining, Loamy", ph: "6.0 - 6.8",
+                soil: "Fluffy, rich soil that drains well", ph: "6.0 - 6.8",
                 light: "Full Sun (8+ hrs)",
                 water: "Consistent moisture",
                 nutrition: "Heavy Feeder. Needs Calcium.",
-                spacing: "36-48 inches"
+                spacing: "36-48 inches (Large Vines)",
+                potFriendly: false
             },
             {
                 name: "Red Centiflor Tomato",
@@ -424,11 +448,12 @@
                 desc: "Produces massive clusters (up to 40!) of red cherry tomatoes that ripen together.",
                 link: "https://migardener.com/products/red-centiflor-tomato",
                 maturity: "75 Days", weeksBeforeFrost: 8, weeksAfterFrost: 1.5,
-                soil: "Rich, Fertile", ph: "6.0 - 6.8",
+                soil: "Rich, fertile mix", ph: "6.0 - 6.8",
                 light: "Full Sun",
                 water: "Moderate",
-                nutrition: "Balanced NPK, Watch for blight",
-                spacing: "24-36 inches"
+                nutrition: "Balanced fertilizer",
+                spacing: "24-36 inches (Compact)",
+                potFriendly: true
             },
             {
                 name: "Mushroom Basket Tomato",
@@ -436,11 +461,12 @@
                 desc: "Striking ribbed Russian heirloom with bright pink skin and a tangy, rich flavor.",
                 link: "https://migardener.com/products/mushroom-basket-tomato",
                 maturity: "80 Days", weeksBeforeFrost: 8, weeksAfterFrost: 1.5,
-                soil: "Loose, Deep soil", ph: "6.2 - 6.8",
+                soil: "Deep, loose soil", ph: "6.2 - 6.8",
                 light: "Full Sun",
                 water: "Water at base",
                 nutrition: "High Potassium for fruit set",
-                spacing: "24-36 inches"
+                spacing: "24-36 inches",
+                potFriendly: false
             },
             {
                 name: "Isis Candy Tomato",
@@ -448,11 +474,12 @@
                 desc: "Marbled red and gold cherry tomatoes with a uniquely rich, candy-like sweetness.",
                 link: "https://migardener.com/products/isis-tomato",
                 maturity: "70 Days", weeksBeforeFrost: 8, weeksAfterFrost: 1.5,
-                soil: "Sandy Loam", ph: "6.0 - 6.8",
+                soil: "Sandy, loose mix", ph: "6.0 - 6.8",
                 light: "Full Sun",
                 water: "Consistent",
                 nutrition: "Standard Tomato Fed",
-                spacing: "24-36 inches"
+                spacing: "24-36 inches",
+                potFriendly: false
             },
             {
                 name: "Azoychka Tomato",
@@ -460,11 +487,12 @@
                 desc: "Productive Russian yellow heirloom with a citrusy zing and perfect acid balance.",
                 link: "https://migardener.com/products/azoychka-tomato",
                 maturity: "70 Days", weeksBeforeFrost: 8, weeksAfterFrost: 1.5,
-                soil: "Well-draining", ph: "6.0 - 6.8",
+                soil: "Standard well-draining garden soil", ph: "6.0 - 6.8",
                 light: "Full Sun",
                 water: "Drought tolerant once established",
                 nutrition: "Moderate Feeder",
-                spacing: "24-36 inches"
+                spacing: "24-36 inches",
+                potFriendly: false
             },
             {
                 name: "Ananas Noire Tomato",
@@ -472,11 +500,12 @@
                 desc: "Also known as 'Black Pineapple.' Complex, smoky flavor and vibrant interior colors.",
                 link: "https://migardener.com/products/ananas-noire-tomato",
                 maturity: "85 Days", weeksBeforeFrost: 8, weeksAfterFrost: 2,
-                soil: "Rich, Org Matter", ph: "6.0 - 6.8",
+                soil: "Rich with compost/organic matter", ph: "6.0 - 6.8",
                 light: "Full Sun (Warmth needed)",
                 water: "Heavy requirement",
                 nutrition: "High feeder",
-                spacing: "36 inches"
+                spacing: "36 inches",
+                potFriendly: false
             },
             {
                 name: "Rebel Starfighter Tomato",
@@ -484,11 +513,12 @@
                 desc: "Mesmerizing green-and-gold oxheart patterns. Classic mild green tomato taste.",
                 link: "https://migardener.com/products/rebel-starfighter-tomato",
                 maturity: "80 Days", weeksBeforeFrost: 8, weeksAfterFrost: 1.5,
-                soil: "Loamy", ph: "6.0 - 6.8",
+                soil: "Standard fluffy mix", ph: "6.0 - 6.8",
                 light: "Full Sun",
                 water: "Consistent",
                 nutrition: "Balanced",
-                spacing: "24-30 inches"
+                spacing: "24-30 inches (Semi-Determinate)",
+                potFriendly: true
             },
             {
                 name: "Lucid Gem Tomato",
@@ -497,10 +527,11 @@
                 link: "https://migardener.com/products/lucid-gem-tomato",
                 maturity: "80 Days", weeksBeforeFrost: 8, weeksAfterFrost: 1.5,
                 soil: "Well-draining", ph: "6.0 - 6.8",
-                light: "Full Sun (Anthocyanins need sun)",
+                light: "Full Sun (Color needs sun)",
                 water: "Moderate",
                 nutrition: "Standard",
-                spacing: "24-36 inches"
+                spacing: "24-36 inches",
+                potFriendly: false
             },
             {
                 name: "Champagne Bubbles Tomato",
@@ -508,11 +539,12 @@
                 desc: "Pale yellow mini cherry tomatoes. Vigorous growth and among the sweetest available.",
                 link: "https://migardener.com/products/champagne-bubbles-tomato",
                 maturity: "65 Days", weeksBeforeFrost: 8, weeksAfterFrost: 1.5,
-                soil: "Standard Garden", ph: "6.0 - 6.8",
+                soil: "Standard Garden Soil", ph: "6.0 - 6.8",
                 light: "Full Sun",
                 water: "Moderate",
                 nutrition: "Light Feeder",
-                spacing: "24 inches"
+                spacing: "24 inches",
+                potFriendly: false
             },
             {
                 name: "Tropical Sunset Tomato",
@@ -524,7 +556,8 @@
                 light: "Full Sun",
                 water: "Consistent",
                 nutrition: "Balanced",
-                spacing: "24-36 inches"
+                spacing: "24-36 inches",
+                potFriendly: false
             },
             {
                 name: "Gobstopper Tomato",
@@ -536,7 +569,8 @@
                 light: "Full Sun",
                 water: "Moderate",
                 nutrition: "Standard",
-                spacing: "24 inches"
+                spacing: "24 inches",
+                potFriendly: false
             },
             {
                 name: "Yellow Pear Tomato",
@@ -548,7 +582,8 @@
                 light: "Full Sun",
                 water: "Low maintanence",
                 nutrition: "Light Feeder",
-                spacing: "36 inches (Big vines)"
+                spacing: "36 inches (Big vines)",
+                potFriendly: false
             },
             {
                 name: "Cherry Falls Tomato",
@@ -560,7 +595,8 @@
                 light: "Full Sun",
                 water: "Daily (if in basket)",
                 nutrition: "Liquid Feed Weekly",
-                spacing: "1 plant per basket"
+                spacing: "1 plant per basket",
+                potFriendly: true
             },
             {
                 name: "Hillbilly Tomato",
@@ -568,11 +604,12 @@
                 desc: "Massive bi-colored beefsteaks. Sweeter, low-acid, and beautifully marbled inside.",
                 link: "https://www.amazon.com/dp/B09BP81KJH",
                 maturity: "85 Days", weeksBeforeFrost: 8, weeksAfterFrost: 2,
-                soil: "Rich Loam", ph: "6.0 - 6.8",
+                soil: "Rich, Heavy Soil", ph: "6.0 - 6.8",
                 light: "Full Sun",
                 water: "Deep watering",
                 nutrition: "Heavy Feeder",
-                spacing: "36 inches"
+                spacing: "36 inches",
+                potFriendly: false
             },
             {
                 name: "Pineapple Heirloom Tomato",
@@ -580,11 +617,12 @@
                 desc: "Large bicolored heirloom producing massive pink-yellow fruits with a fruity profile.",
                 link: "https://www.amazon.com/dp/B09N4VYVC4",
                 maturity: "90 Days", weeksBeforeFrost: 8, weeksAfterFrost: 2,
-                soil: "Rich, Mulched", ph: "6.0 - 6.8",
+                soil: "Rich, Mulched, Organic", ph: "6.0 - 6.8",
                 light: "Full Sun",
                 water: "Consistent",
                 nutrition: "Heavy Feeder",
-                spacing: "36 inches"
+                spacing: "36 inches",
+                potFriendly: false
             },
 
             // OTHER
@@ -594,27 +632,35 @@
                 desc: "A Polish heirloom tasting like a mix of tomatillo and pineapple. Husk-covered fruits.",
                 link: "https://migardener.com/products/aunt-mollys-groundcherry",
                 maturity: "70 Days", weeksBeforeFrost: 10, weeksAfterFrost: 2,
-                soil: "Average soil", ph: "6.0 - 7.0",
+                soil: "Average well-draining soil", ph: "6.0 - 7.0",
                 light: "Full Sun/Part Shade",
                 water: "Moderate",
                 nutrition: "Moderate Feeder",
-                spacing: "18-24 inches"
+                spacing: "18-24 inches",
+                potFriendly: true
             }
         ];
 
         const grid = document.getElementById('plantGrid');
         const search = document.getElementById('search');
         const frostInput = document.getElementById('frostDateInput');
+        const hoopToggle = document.getElementById('hoopHouseToggle');
 
         const formatDate = (date) => date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
 
         function render(filter = "") {
             const frostDate = new Date(frostInput.value + "T12:00:00");
+            const hasHoopHouse = hoopToggle.checked;
+
+            // Hoop house benefit: You can plant out ~2 weeks earlier
+            const hoopOffset = hasHoopHouse ? 14 : 0;
 
             // Stats
-            const safeOutside = new Date(frostDate); safeOutside.setDate(safeOutside.getDate() + 10);
+            const safeOutside = new Date(frostDate);
+            safeOutside.setDate(safeOutside.getDate() + 10 - hoopOffset);
             document.getElementById('safeOutdoorDate').innerText = formatDate(safeOutside);
-            const generalIndoor = new Date(frostDate); generalIndoor.setDate(generalIndoor.getDate() - (8 * 7));
+            const generalIndoor = new Date(frostDate);
+            generalIndoor.setDate(generalIndoor.getDate() - (8 * 7));
             document.getElementById('startIndoorsDate').innerText = formatDate(generalIndoor);
 
             grid.innerHTML = "";
@@ -622,14 +668,23 @@
 
             filtered.forEach((p, index) => {
                 const startDay = new Date(frostDate); startDay.setDate(startDay.getDate() - (p.weeksBeforeFrost * 7));
-                const outdoorDay = new Date(frostDate); outdoorDay.setDate(outdoorDay.getDate() + (p.weeksAfterFrost * 7));
+
+                const outdoorDay = new Date(frostDate);
+                // Apply hoop house benefit
+                const daysAfterFrost = (p.weeksAfterFrost * 7) - hoopOffset;
+                outdoorDay.setDate(outdoorDay.getDate() + daysAfterFrost);
 
                 const card = document.createElement('div');
                 card.className = 'card';
                 card.onclick = () => openModal(index, startDay, outdoorDay);
+
+                // Pot badge HTML
+                const potBadge = p.potFriendly ? `<span class="pot-badge">🪣 Pot Friendly</span>` : '';
+
                 card.innerHTML = `
                     <div>
                         <span class="tag">${p.type}</span>
+                        ${potBadge}
                         <h3>${p.name}</h3>
                         <div class="quick-icons">
                             <span class="icon-pair" title="Sunlight Needs">
@@ -660,13 +715,19 @@
 
         function openModal(index, startDay, outdoorDay) {
             const p = plants[index];
+            const hasHoopHouse = hoopToggle.checked;
+            const hoopMessage = hasHoopHouse ?
+                `<br><span style="font-size:0.8em; color:var(--accent);">*Adjusted for Hoop House protection (earlier start!)</span>` :
+                `<br><span style="font-size:0.8em; color:var(--text-muted);">(Hoop house could act as a solar trap to plant 2 weeks earlier!)</span>`;
+
             modalBody.innerHTML = `
                 <div class="modal-header">
                     <span class="tag">${p.type}</span>
-                    <h2>${p.name}</h2>
+                    <h2 style="display:inline-block; margin-right: 10px;">${p.name}</h2>
+                    ${p.potFriendly ? '<span class="pot-badge" style="font-size: 1rem; vertical-align: middle;">🪣 Pot Friendly</span>' : ''}
                     <p>${p.desc}</p>
                 </div>
-                
+
                 <div class="care-grid">
                     <div class="care-item">
                         <h4>🌱 Soil & pH</h4>
@@ -691,6 +752,7 @@
                      <div class="care-item">
                         <h4>🌳 Move Outdoors</h4>
                         <p style="color: var(--highlight); font-weight: bold;">${formatDate(outdoorDay)}</p>
+                        ${hoopMessage}
                     </div>
                 </div>
 
@@ -715,9 +777,19 @@
             localStorage.setItem('userFrostDate', frostInput.value);
             render(search.value);
         });
+        hoopToggle.addEventListener('change', () => {
+            localStorage.setItem('userHoopHouse', hoopToggle.checked);
+            render(search.value);
+        });
         search.addEventListener('input', (e) => render(e.target.value));
+
+        // Load saved settings
         const savedDate = localStorage.getItem('userFrostDate');
         if (savedDate) frostInput.value = savedDate;
+
+        const savedHoop = localStorage.getItem('userHoopHouse');
+        if (savedHoop === 'true') hoopToggle.checked = true;
+
         render();
     </script>
 
