@@ -1,21 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Botanical Seed Catalog</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&family=Playfair+Display:ital,wght@0,700;1,700&display=swap"
+        rel="stylesheet">
     <style>
         :root {
             --bg: #0f172a;
             --card-bg: rgba(30, 41, 59, 0.7);
             --accent: #10b981;
+            --accent-soft: rgba(16, 185, 129, 0.15);
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
             --glass: rgba(255, 255, 255, 0.03);
             --border: rgba(255, 255, 255, 0.1);
+            --highlight: #f59e0b;
+            /* Golden for dates */
         }
 
         * {
@@ -31,7 +37,7 @@
             line-height: 1.6;
             padding: 40px 20px;
             background-image: radial-gradient(circle at 0% 0%, rgba(16, 185, 129, 0.1) 0%, transparent 40%),
-                              radial-gradient(circle at 100% 100%, rgba(16, 185, 129, 0.05) 0%, transparent 40%);
+                radial-gradient(circle at 100% 100%, rgba(16, 185, 129, 0.05) 0%, transparent 40%);
         }
 
         .container {
@@ -41,7 +47,7 @@
 
         header {
             text-align: center;
-            margin-bottom: 60px;
+            margin-bottom: 40px;
         }
 
         h1 {
@@ -55,6 +61,40 @@
             color: var(--text-muted);
             font-size: 1.1rem;
             font-weight: 300;
+        }
+
+        /* Planting Guide Section */
+        .guide-box {
+            background: var(--glass);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 40px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            backdrop-filter: blur(10px);
+            justify-content: space-around;
+        }
+
+        .guide-item {
+            flex: 1;
+            min-width: 250px;
+            text-align: center;
+        }
+
+        .guide-item span {
+            display: block;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            letter-spacing: 0.1em;
+            margin-bottom: 5px;
+        }
+
+        .guide-item strong {
+            font-size: 1.25rem;
+            color: var(--highlight);
         }
 
         .search-container {
@@ -83,7 +123,7 @@
 
         .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
             gap: 25px;
         }
 
@@ -102,21 +142,47 @@
         }
 
         .card:hover {
-            transform: translateY(-10px);
+            transform: translateY(-8px);
             border-color: var(--accent);
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
         }
 
         .card h3 {
             font-size: 1.4rem;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
             color: var(--accent);
         }
 
-        .card p {
+        .card p.desc {
             color: var(--text-muted);
-            margin-bottom: 25px;
+            margin-bottom: 20px;
             font-size: 0.95rem;
+            min-height: 4.5em;
+        }
+
+        /* Stats Section in Card */
+        .stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 25px;
+            padding-top: 15px;
+            border-top: 1px solid var(--border);
+        }
+
+        .stat-box {
+            font-size: 0.8rem;
+        }
+
+        .stat-box span {
+            display: block;
+            color: var(--text-muted);
+            font-size: 0.7rem;
+            text-transform: uppercase;
+        }
+
+        .stat-box strong {
+            color: var(--text-main);
         }
 
         .card .btn {
@@ -133,7 +199,6 @@
 
         .card .btn:hover {
             filter: brightness(1.1);
-            transform: scale(1.02);
         }
 
         .tag {
@@ -141,7 +206,7 @@
             text-transform: uppercase;
             letter-spacing: 0.1em;
             color: var(--accent);
-            background: rgba(16, 185, 129, 0.1);
+            background: var(--accent-soft);
             padding: 4px 10px;
             border-radius: 6px;
             margin-bottom: 10px;
@@ -149,19 +214,42 @@
         }
 
         @media (max-width: 768px) {
-            h1 { font-size: 2.5rem; }
+            h1 {
+                font-size: 2.5rem;
+            }
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <header>
-            <h1>Seed Catalog</h1>
-            <p class="subtitle">An organized collection of your curated botanical links.</p>
-            <div class="search-container">
-                <input type="text" id="search" placeholder="Search for a plant name or trait...">
-            </div>
+            <h1>2026 Seed Catalog</h1>
+            <p class="subtitle">Personal Planting Schedule & Collection</p>
         </header>
+
+        <section class="guide-box">
+            <div class="guide-item">
+                <span>Last Frost Date</span>
+                <strong>Estimated: May 10th</strong>
+            </div>
+            <div class="guide-item">
+                <span>Safe to Plant Outside</span>
+                <strong>Late May</strong>
+            </div>
+            <div class="guide-item">
+                <span>Start Indoors (Tent + Lights)</span>
+                <strong>Mid March</strong>
+            </div>
+            <div class="guide-item">
+                <span>Avg. Maturity From Transplant</span>
+                <strong>70 - 85 Days</strong>
+            </div>
+        </section>
+
+        <div class="search-container">
+            <input type="text" id="search" placeholder="Search cultivars, traits, or types...">
+        </div>
 
         <div class="grid" id="plantGrid">
             <!-- Cards will be injected here -->
@@ -170,22 +258,22 @@
 
     <script>
         const plants = [
-            { name: "Orange Currant Tomato", desc: "Tiny clementine-colored gems that pop with sweet, fruity flavor. Extremely productive.", link: "https://migardener.com/products/orange-currant-tomato", type: "Tomato" },
-            { name: "Red Centiflor Tomato", desc: "Produces massive clusters (up to 40!) of red cherry tomatoes that ripen together.", link: "https://migardener.com/products/red-centiflor-tomato", type: "Tomato" },
-            { name: "Mushroom Basket Tomato", desc: "Striking ribbed Russian heirloom with bright pink skin and a tangy flavor.", link: "https://migardener.com/products/mushroom-basket-tomato", type: "Tomato" },
-            { name: "Isis Candy Tomato", desc: "Marbled red and gold cherry tomatoes with a uniquely rich, candy-like sweetness.", link: "https://migardener.com/products/isis-tomato", type: "Tomato" },
-            { name: "Aunt Molly's Ground Cherry", desc: "A Polish heirloom tasting like a mix of tomatillo and pineapple. Fruits fall when ripe.", link: "https://migardener.com/products/aunt-mollys-groundcherry", type: "Groundcherry" },
-            { name: "Azoychka Tomato", desc: "A productive Russian yellow heirloom with a citrusy zing and perfect acid balance.", link: "https://migardener.com/products/azoychka-tomato", type: "Tomato" },
-            { name: "Ananas Noire Tomato", desc: "Also known as 'Black Pineapple.' Complex flavor and multichromatic interior.", link: "https://migardener.com/products/ananas-noire-tomato", type: "Tomato" },
-            { name: "Rebel Starfighter Tomato", desc: "Oxheart-shaped fruit with mesmerizing green-and-gold patterns. Mild flavor.", link: "https://migardener.com/products/rebel-starfighter-tomato", type: "Tomato" },
-            { name: "Lucid Gem Tomato", desc: "Breathtaking purple-and-orange slicers. Meaty, uniform, and high-yielding.", link: "https://migardener.com/products/lucid-gem-tomato", type: "Tomato" },
-            { name: "Champagne Bubbles Tomato", desc: "Pale yellow, mini cherry tomatoes that are among the sweetest available.", link: "https://migardener.com/products/champagne-bubbles-tomato", type: "Tomato" },
-            { name: "Tropical Sunset Tomato", desc: "Bi-colored gold-and-pink stripes. Long shelf life and perfect sugar-acid balance.", link: "https://migardener.com/products/tropical-sunset-tomato", type: "Tomato" },
-            { name: "Gobstopper Tomato", desc: "Green-fleshed yellow cherry that is split-resistant and intensely sweet.", link: "https://migardener.com/products/gobstopper-tomato", type: "Tomato" },
-            { name: "Yellow Pear Tomato", desc: "Traditional heirloom with a delicate pear shape. Prolific and very hardy.", link: "https://migardener.com/products/yellow-pear-tomato", type: "Tomato" },
-            { name: "Cherry Falls Tomato", desc: "A cascading variety perfect for baskets. Vigorous vines produce sweet fruits.", link: "https://www.amazon.com/dp/B07MDNVFVK", type: "Amazon" },
-            { name: "Hillbilly Tomato", desc: "Massive bi-colored beefsteaks. Sweet, low-acid, and beautifully marbled.", link: "https://www.amazon.com/dp/B09BP81KJH", type: "Amazon" },
-            { name: "Pineapple Heirloom Tomato", desc: "Classic heavy-yielding heirloom producing massive pink-yellow bi-colored fruits.", link: "https://www.amazon.com/dp/B09N4VYVC4", type: "Amazon" }
+            { name: "Orange Currant Tomato", desc: "Tiny clementine-colored gems that pop with sweet flavor. Extremely productive currant variety.", link: "https://migardener.com/products/orange-currant-tomato", type: "Tomato", maturity: "75 Days", start: "Mar 15", outdoor: "May 20" },
+            { name: "Red Centiflor Tomato", desc: "Produces massive clusters (up to 40!) of red cherry tomatoes that ripen together.", link: "https://migardener.com/products/red-centiflor-tomato", type: "Tomato", maturity: "75 Days", start: "Mar 15", outdoor: "May 20" },
+            { name: "Mushroom Basket Tomato", desc: "Striking ribbed Russian heirloom with bright pink skin and a tangy, rich flavor.", link: "https://migardener.com/products/mushroom-basket-tomato", type: "Tomato", maturity: "80 Days", start: "Mar 15", outdoor: "May 20" },
+            { name: "Isis Candy Tomato", desc: "Marbled red and gold cherry tomatoes with a uniquely rich, candy-like sweetness.", link: "https://migardener.com/products/isis-tomato", type: "Tomato", maturity: "70 Days", start: "Mar 15", outdoor: "May 20" },
+            { name: "Aunt Molly's Ground Cherry", desc: "A Polish heirloom tasting like a mix of tomatillo and pineapple. Husk-covered fruits.", link: "https://migardener.com/products/aunt-mollys-groundcherry", type: "Groundcherry", maturity: "70 Days", start: "Mar 1", outdoor: "May 25" },
+            { name: "Azoychka Tomato", desc: "Productive Russian yellow heirloom with a citrusy zing and perfect acid balance.", link: "https://migardener.com/products/azoychka-tomato", type: "Tomato", maturity: "70 Days", start: "Mar 15", outdoor: "May 20" },
+            { name: "Ananas Noire Tomato", desc: "Also known as 'Black Pineapple.' Complex, smoky flavor and vibrant interior colors.", link: "https://migardener.com/products/ananas-noire-tomato", type: "Tomato", maturity: "85 Days", start: "Mar 15", outdoor: "May 20" },
+            { name: "Rebel Starfighter Tomato", desc: "Mesmerizing green-and-gold oxheart patterns. Classic mild green tomato taste.", link: "https://migardener.com/products/rebel-starfighter-tomato", type: "Tomato", maturity: "80 Days", start: "Mar 15", outdoor: "May 20" },
+            { name: "Lucid Gem Tomato", desc: "Breathtaking purple-and-orange slicers. Meatier texture, high-yielding and uniform.", link: "https://migardener.com/products/lucid-gem-tomato", type: "Tomato", maturity: "80 Days", start: "Mar 15", outdoor: "May 20" },
+            { name: "Champagne Bubbles Tomato", desc: "Pale yellow mini cherry tomatoes. Vigorous growth and among the sweetest available.", link: "https://migardener.com/products/champagne-bubbles-tomato", type: "Tomato", maturity: "65 Days", start: "Mar 15", outdoor: "May 20" },
+            { name: "Tropical Sunset Tomato", desc: "Bi-colored gold-and-pink stripes. Long shelf life and vibrant sugar-acid balance.", link: "https://migardener.com/products/tropical-sunset-tomato", type: "Tomato", maturity: "75 Days", start: "Mar 15", outdoor: "May 20" },
+            { name: "Gobstopper Tomato", desc: "Green-fleshed early yellow cherry. Split-resistant and intensely sweet/fruity.", link: "https://migardener.com/products/gobstopper-tomato", type: "Tomato", maturity: "70 Days", start: "Mar 15", outdoor: "May 20" },
+            { name: "Yellow Pear Tomato", desc: "Traditional heirloom with a delicate pear shape. Very prolific and hardy in MI gardens.", link: "https://migardener.com/products/yellow-pear-tomato", type: "Tomato", maturity: "80 Days", start: "Mar 15", outdoor: "May 20" },
+            { name: "Cherry Falls Tomato", desc: "Vigorous cascading variety perfect for hanging baskets. Fast-maturing and prolific.", link: "https://www.amazon.com/dp/B07MDNVFVK", type: "Amazon", maturity: "65 Days", start: "Mar 15", outdoor: "May 15" },
+            { name: "Hillbilly Tomato", desc: "Massive bi-colored beefsteaks. Sweeter, low-acid, and beautifully marbled inside.", link: "https://www.amazon.com/dp/B09BP81KJH", type: "Amazon", maturity: "85 Days", start: "Mar 15", outdoor: "May 25" },
+            { name: "Pineapple Heirloom Tomato", desc: "Large bicolored heirloom producing massive pink-yellow fruits with a fruity profile.", link: "https://www.amazon.com/dp/B09N4VYVC4", type: "Amazon", maturity: "90 Days", start: "Mar 15", outdoor: "May 25" }
         ];
 
         const grid = document.getElementById('plantGrid');
@@ -193,8 +281,8 @@
 
         function render(filter = "") {
             grid.innerHTML = "";
-            const filtered = plants.filter(p => 
-                p.name.toLowerCase().includes(filter.toLowerCase()) || 
+            const filtered = plants.filter(p =>
+                p.name.toLowerCase().includes(filter.toLowerCase()) ||
                 p.desc.toLowerCase().includes(filter.toLowerCase())
             );
 
@@ -205,7 +293,25 @@
                     <div>
                         <span class="tag">${p.type}</span>
                         <h3>${p.name}</h3>
-                        <p>${p.desc}</p>
+                        <p class="desc">${p.desc}</p>
+                        <div class="stats">
+                            <div class="stat-box">
+                                <span>Indoor Start</span>
+                                <strong>${p.start}</strong>
+                            </div>
+                            <div class="stat-box">
+                                <span>Plant Outside</span>
+                                <strong>${p.outdoor}</strong>
+                            </div>
+                            <div class="stat-box">
+                                <span>Maturity</span>
+                                <strong>${p.maturity}</strong>
+                            </div>
+                            <div class="stat-box">
+                                <span>Location</span>
+                                <strong>Sun/Light</strong>
+                            </div>
+                        </div>
                     </div>
                     <a href="${p.link}" target="_blank" class="btn">View Source</a>
                 `;
@@ -217,4 +323,9 @@
         render();
     </script>
 </body>
+
+</html>
+
+</body>
+
 </html>
