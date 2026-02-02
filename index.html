@@ -164,6 +164,16 @@
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
         }
 
+        .card-image {
+            width: 100%;
+            height: 220px;
+            object-fit: contain;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            background: rgba(255, 255, 255, 0.02);
+            padding: 10px;
+        }
+
         .card h3 {
             font-size: 1.4rem;
             margin-bottom: 5px;
@@ -440,7 +450,8 @@
                 water: "Consistent moisture",
                 nutrition: "Heavy Feeder. Needs Calcium.",
                 spacing: "36-48 inches (Large Vines)",
-                potFriendly: false
+                potFriendly: false,
+                image: "./images/orange_currant_tomato_1770001251041.png"
             },
             {
                 name: "Red Centiflor Tomato",
@@ -453,7 +464,8 @@
                 water: "Moderate",
                 nutrition: "Balanced fertilizer",
                 spacing: "24-36 inches (Compact)",
-                potFriendly: true
+                potFriendly: true,
+                image: "./images/red_centiflor_tomato_1770001264918.png"
             },
             {
                 name: "Mushroom Basket Tomato",
@@ -466,7 +478,8 @@
                 water: "Water at base",
                 nutrition: "High Potassium for fruit set",
                 spacing: "24-36 inches",
-                potFriendly: false
+                potFriendly: false,
+                image: "./images/mushroom_basket_tomato_1770001278035.png"
             },
             {
                 name: "Isis Candy Tomato",
@@ -479,7 +492,8 @@
                 water: "Consistent",
                 nutrition: "Standard Tomato Fed",
                 spacing: "24-36 inches",
-                potFriendly: false
+                potFriendly: false,
+                image: "./images/isis_candy_tomato_1770001290016.png"
             },
             {
                 name: "Azoychka Tomato",
@@ -492,7 +506,8 @@
                 water: "Drought tolerant once established",
                 nutrition: "Moderate Feeder",
                 spacing: "24-36 inches",
-                potFriendly: false
+                potFriendly: false,
+                image: "./images/azoychka_tomato_1770001310026.png"
             },
             {
                 name: "Ananas Noire Tomato",
@@ -505,7 +520,8 @@
                 water: "Heavy requirement",
                 nutrition: "High feeder",
                 spacing: "36 inches",
-                potFriendly: false
+                potFriendly: false,
+                image: "./images/ananas_noire_tomato_1770001321691.png"
             },
             {
                 name: "Rebel Starfighter Tomato",
@@ -518,7 +534,8 @@
                 water: "Consistent",
                 nutrition: "Balanced",
                 spacing: "24-30 inches (Semi-Determinate)",
-                potFriendly: true
+                potFriendly: true,
+                image: "./images/rebel_starfighter_tomato_1770001335431.png"
             },
             {
                 name: "Lucid Gem Tomato",
@@ -531,7 +548,8 @@
                 water: "Moderate",
                 nutrition: "Standard",
                 spacing: "24-36 inches",
-                potFriendly: false
+                potFriendly: false,
+                image: "./images/lucid_gem_tomato_1770001348345.png"
             },
             {
                 name: "Champagne Bubbles Tomato",
@@ -544,7 +562,8 @@
                 water: "Moderate",
                 nutrition: "Light Feeder",
                 spacing: "24 inches",
-                potFriendly: false
+                potFriendly: false,
+                image: "./images/champagne_bubbles_tomato_1770001368339.png"
             },
             {
                 name: "Tropical Sunset Tomato",
@@ -557,7 +576,8 @@
                 water: "Consistent",
                 nutrition: "Balanced",
                 spacing: "24-36 inches",
-                potFriendly: false
+                potFriendly: false,
+                image: "./images/tropical_sunset_tomato_1770001385666.png"
             },
             {
                 name: "Gobstopper Tomato",
@@ -570,7 +590,8 @@
                 water: "Moderate",
                 nutrition: "Standard",
                 spacing: "24 inches",
-                potFriendly: false
+                potFriendly: false,
+                image: "./images/gobstopper_tomato_1770001398713.png"
             },
             {
                 name: "Yellow Pear Tomato",
@@ -583,7 +604,8 @@
                 water: "Low maintanence",
                 nutrition: "Light Feeder",
                 spacing: "36 inches (Big vines)",
-                potFriendly: false
+                potFriendly: false,
+                image: "./images/yellow_pear_tomato_illustration_1770001060875.png"
             },
             {
                 name: "Cherry Falls Tomato",
@@ -596,7 +618,8 @@
                 water: "Daily (if in basket)",
                 nutrition: "Liquid Feed Weekly",
                 spacing: "1 plant per basket",
-                potFriendly: true
+                potFriendly: true,
+                image: "./images/cherry_falls_tomato_1770001411929.png"
             },
             {
                 name: "Hillbilly Tomato",
@@ -609,7 +632,8 @@
                 water: "Deep watering",
                 nutrition: "Heavy Feeder",
                 spacing: "36 inches",
-                potFriendly: false
+                potFriendly: false,
+                image: "./images/hillbilly_tomato_1770001433419.png"
             },
             {
                 name: "Pineapple Heirloom Tomato",
@@ -622,7 +646,8 @@
                 water: "Consistent",
                 nutrition: "Heavy Feeder",
                 spacing: "36 inches",
-                potFriendly: false
+                potFriendly: false,
+                image: "./images/hillbilly_tomato_1770001433419.png"
             },
 
             // OTHER
@@ -637,7 +662,8 @@
                 water: "Moderate",
                 nutrition: "Moderate Feeder",
                 spacing: "18-24 inches",
-                potFriendly: true
+                potFriendly: true,
+                image: "./images/ground_cherry_illustration_1770001085773.png"
             }
         ];
 
@@ -683,6 +709,7 @@
 
                 card.innerHTML = `
                     <div>
+                        <img src="${p.image}" alt="${p.name}" class="card-image">
                         <span class="tag">${p.type}</span>
                         ${potBadge}
                         <h3>${p.name}</h3>
@@ -722,6 +749,7 @@
 
             modalBody.innerHTML = `
                 <div class="modal-header">
+                    <img src="${p.image}" style="width:100%; height: 300px; object-fit: contain; border-radius: 12px; margin-bottom: 20px; background: rgba(255,255,255,0.02);" alt="${p.name}">
                     <span class="tag">${p.type}</span>
                     <h2 style="display:inline-block; margin-right: 10px;">${p.name}</h2>
                     ${p.potFriendly ? '<span class="pot-badge" style="font-size: 1rem; vertical-align: middle;">🪣 Pot Friendly</span>' : ''}
