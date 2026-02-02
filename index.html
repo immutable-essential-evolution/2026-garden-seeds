@@ -161,6 +161,79 @@
             box-shadow: 0 0 20px rgba(16, 185, 129, 0.2);
         }
 
+        /* Filters */
+        .filter-section {
+            max-width: 1000px;
+            margin: 0 auto 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .filter-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .filter-chip {
+            padding: 8px 20px;
+            border-radius: 50px;
+            border: 1px solid var(--border);
+            background: var(--glass);
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            backdrop-filter: blur(10px);
+        }
+
+        .filter-chip:hover {
+            border-color: var(--accent);
+            color: var(--text-main);
+        }
+
+        .filter-chip.active {
+            background: var(--accent);
+            color: #064e3b;
+            border-color: var(--accent);
+            font-weight: 600;
+        }
+
+        .toggle-filter {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--text-main);
+            font-size: 0.9rem;
+            background: var(--glass);
+            padding: 8px 20px;
+            border-radius: 50px;
+            border: 1px solid var(--border);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .toggle-filter.active {
+            border-color: var(--highlight);
+            box-shadow: 0 0 10px rgba(245, 158, 11, 0.2);
+        }
+
+        .toggle-filter.active span.indicator {
+            background: var(--highlight);
+        }
+
+        span.indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--border);
+            display: inline-block;
+            transition: background 0.3s;
+        }
+
         /* Grid & Cards */
         .grid {
             display: grid;
@@ -561,6 +634,26 @@
             </select>
         </div>
 
+        <div class="filter-section">
+            <div class="filter-group" id="typeFilters">
+                <button class="filter-chip active" data-type="all">All Types</button>
+                <button class="filter-chip" data-type="Tomato">Tomatoes</button>
+                <button class="filter-chip" data-type="Groundcherry">Groundcherries</button>
+            </div>
+            <div class="filter-group">
+                <button class="toggle-filter" id="potFilterBtn">
+                    <span class="indicator"></span> Pot Friendly Only
+                </button>
+                <select id="speedFilter"
+                    style="background: var(--glass); color: var(--text-muted); border: 1px solid var(--border); border-radius: 50px; padding: 5px 15px; outline: none; cursor: pointer;">
+                    <option value="all">Any Maturity</option>
+                    <option value="early">Early Season (<70d)< /option>
+                    <option value="mid">Mid Season (70-80d)</option>
+                    <option value="late">Late Season (>80d)</option>
+                </select>
+            </div>
+        </div>
+
         <div class="grid" id="plantGrid"></div>
     </div>
 
@@ -796,7 +889,7 @@
             },
             {
                 name: "Cherry Falls Tomato",
-                type: "Amazon",
+                type: "Tomato",
                 desc: "Vigorous cascading variety perfect for hanging baskets. Fast-maturing and prolific.",
                 link: "https://www.amazon.com/dp/B07MDNVFVK",
                 maturity: "65 Days", weeksBeforeFrost: 8, weeksAfterFrost: 0.5,
@@ -812,7 +905,7 @@
             },
             {
                 name: "Hillbilly Tomato",
-                type: "Amazon",
+                type: "Tomato",
                 desc: "Massive bi-colored beefsteaks. Sweeter, low-acid, and beautifully marbled inside.",
                 link: "https://www.amazon.com/dp/B09BP81KJH",
                 maturity: "85 Days", weeksBeforeFrost: 8, weeksAfterFrost: 2,
@@ -828,7 +921,7 @@
             },
             {
                 name: "Pineapple Heirloom Tomato",
-                type: "Amazon",
+                type: "Tomato",
                 desc: "Large bicolored heirloom producing massive pink-yellow fruits with a fruity profile.",
                 link: "https://www.amazon.com/dp/B09N4VYVC4",
                 maturity: "90 Days", weeksBeforeFrost: 8, weeksAfterFrost: 2,
@@ -869,10 +962,17 @@
         const summaryCount = document.getElementById('summaryCount');
         const summaryOverlay = document.getElementById('summaryOverlay');
         const summaryBody = document.getElementById('summaryBody');
+        const typeFilters = document.getElementById('typeFilters');
+        const potFilterBtn = document.getElementById('potFilterBtn');
+        const speedFilter = document.getElementById('speedFilter');
 
         // Load selection from localStorage
         let selectedIndices = JSON.parse(localStorage.getItem('selectedPlants') || '[]');
         let selectedSet = new Set(selectedIndices);
+
+        // Filter state
+        let activeType = 'all';
+        let potOnly = false;
 
         const formatDate = (date) => date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
 
@@ -932,11 +1032,34 @@
                 return { ...p, originalIndex: index, startDay, outdoorDay, maturityDays };
             });
 
-            // 3. Filter (Search and now check companions/pests)
-            let displayList = enhancedPlants.filter(p =>
+            // 3. Filter (Type, Pot, Speed, then Search)
+            let displayList = enhancedPlants;
+
+            // Type Filter
+            if (activeType !== 'all') {
+                displayList = displayList.filter(p => p.type === activeType);
+            }
+
+            // Pot Filter
+            if (potOnly) {
+                displayList = displayList.filter(p => p.potFriendly);
+            }
+
+            // Speed Filter
+            const speedMode = speedFilter.value;
+            if (speedMode !== 'all') {
+                displayList = displayList.filter(p => {
+                    if (speedMode === 'early') return p.maturityDays < 70;
+                    if (speedMode === 'mid') return p.maturityDays >= 70 && p.maturityDays <= 80;
+                    if (speedMode === 'late') return p.maturityDays > 80;
+                });
+            }
+
+            // Search
+            displayList = displayList.filter(p =>
                 p.name.toLowerCase().includes(filter.toLowerCase()) ||
                 p.desc.toLowerCase().includes(filter.toLowerCase()) ||
-                p.type.toLowerCase().includes(filter.toLowerCase()) ||
+                (p.type && p.type.toLowerCase().includes(filter.toLowerCase())) ||
                 (p.companions && p.companions.toLowerCase().includes(filter.toLowerCase())) ||
                 (p.pests && p.pests.toLowerCase().includes(filter.toLowerCase()))
             );
@@ -1145,6 +1268,24 @@
         });
         search.addEventListener('input', () => render());
         sortSelect.addEventListener('change', () => render());
+        speedFilter.addEventListener('change', () => render());
+
+        // Category Filter Clicks
+        typeFilters.addEventListener('click', (e) => {
+            if (e.target.classList.contains('filter-chip')) {
+                document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+                e.target.classList.add('active');
+                activeType = e.target.dataset.type;
+                render();
+            }
+        });
+
+        // Pot Toggle
+        potFilterBtn.addEventListener('click', () => {
+            potOnly = !potOnly;
+            potFilterBtn.classList.toggle('active', potOnly);
+            render();
+        });
 
         // Load saved settings
         const savedDate = localStorage.getItem('userFrostDate');
